@@ -5,14 +5,19 @@ Executive Summary
 This detailed analysis has been performed to fulfill the requirements of the course project for the course Practical Machine Learning offered by the Johns Hopkins University on Coursera. Using devices such as Jawbone Up, Nike FuelBand, and Fitbit, it is now possible to collect a large amount of data about personal activity relatively inexpensively. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, our goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways.
 Six young health participants were asked to perform one set of 10 repetitions of the Unilateral Dumbbell Biceps Curl in five different fashions: exactly according to the specification (Class A), throwing the elbows to the front (Class B), lifting the dumbbell only halfway (Class C), lowering the dumbbell only halfway (Class D) and throwing the hips to the front (Class E). Class A corresponds to the specified execution of the exercise, while the other 4 classes correspond to common mistakes.
 Read more about the data set details in the Groupware@LES website.
+
+
 The main objectives of this project are as follows
-Predict the manner in which they did the exercise depicted by the classe variable.
-Build a prediction model using different features and cross-validation technique.
-Calculate the out of sample error.
-Use the prediction model to predict 20 different test cases provided. 
-Data retrieval, processing and transformation
+  -Predict the manner in which they did the exercise depicted by the classe variable.
+  -Build a prediction model using different features and cross-validation technique.
+  -Calculate the out of sample error.
+  -Use the prediction model to predict 20 different test cases provided. 
+  -Data retrieval, processing and transformation
+  
+  
 This section consists of the steps followed to setup our R environment, get the required data, clean and process it.
 Setting up required environment in R
+
 In the following code segment, we set the required global options and load the required packages in R.
 library(knitr)	
 opts_chunk$set(cache=TRUE,echo=TRUE)
@@ -21,6 +26,7 @@ library(caret)
 library(randomForest)
 library(pander)
 
+
 Getting the required data
 The training data is available here: Training Data
 The test data is available here: Testing Data
@@ -28,7 +34,8 @@ The data can be downloaded using the following code segment.
 downloadDataset <- function(URL="", destFile="data.csv"){
   if(!file.exists(destFile)){
     download.file(URL, destFile, method="curl")
-  }else{
+  }
+  else{
     message("Dataset already downloaded.")
   }
 }
@@ -40,15 +47,22 @@ downloadDataset(trainURL, "pml-training.csv")
 downloadDataset(testURL, "pml-testing.csv")
 ## Dataset already downloaded.
 
+
 Loading the data
 Next, we read the file using appropriate functions and load in the data using the following commands. We just check if the data is loaded correctly by viewing a few rows and columns of the data frame.
 training <- read.csv("pml-training.csv",na.strings=c("NA",""))
 testing <-read.csv("pml-testing.csv",na.strings=c("NA",""))
 dim(training)
+
+
 ## [1] 19622   160
+
 dim(testing)
+
 ## [1]  20 160
+
 training[1:5,c('user_name','classe','num_window','roll_belt','pitch_belt')]
+
 ##   user_name classe num_window roll_belt pitch_belt
 ## 1  carlitos      A         11      1.41       8.07
 ## 2  carlitos      A         11      1.41       8.07
@@ -57,9 +71,12 @@ training[1:5,c('user_name','classe','num_window','roll_belt','pitch_belt')]
 ## 5  carlitos      A         12      1.48       8.07
 
 Processing the data
+
 First, we check how many columns have NA values in the training and testing data and what is the quantity of NAvalues present.
 sum(is.na(training))  # Total NA values
+
 [1] 1921600
+
 t1 <- table(colSums(is.na(training)))
 t2 <- table(colSums(is.na(testing)))
 pandoc.table(t1, style = "grid", justify = 'left', caption = 'Training data column NA frequencies')
@@ -83,11 +100,13 @@ pandoc.table(t2, style = "grid", justify = 'left', caption = 'Testing data colum
 
 Table: Testing data column NA frequencies
 Looking at the above values it is clear that 60 variables have 0 NA values while the rest have NA values for almost all the rows of the dataset, so we are going to ignore them using the following code segment.
+
 # for training dataset
 columnNACounts <- colSums(is.na(training))        # getting NA counts for all columns
 badColumns <- columnNACounts >= 19000             # ignoring columns with majority NA values
 cleanTrainingdata <- training[!badColumns]        # getting clean data
 sum(is.na(cleanTrainingdata))                     # checking for NA values
+
 ## [1] 0
 cleanTrainingdata <- cleanTrainingdata[, c(7:60)] # removing unnecessary columns
 
@@ -99,6 +118,7 @@ sum(is.na(cleanTestingdata))                     # checking for NA values
 ## [1] 0
 cleanTestingdata <- cleanTestingdata[, c(7:60)] # removing unnecessary columns
 Now since we don’t have any NA values we are ready to do some exploratory analysis and build our prediction model. 
+
 
 Exploratory Data Analysis
 We look at some summary statistics and frequency plot for the classe variable.
@@ -229,7 +249,9 @@ Here, we apply the machine learning algorithm we built above, to each of the 20 
 answers <- predict(model, cleanTestingdata)
 answers <- as.character(answers)
 answers
+
 ##  [1] "B" "A" "B" "A" "A" "E" "D" "B" "A" "A" "B" "C" "B" "A" "E" "E" "A" "B" "B" "B"
+
 Finally, we write the answers to files as specified by the course instructor using the following code segment.
 pml_write_files = function(x) {
     n = length(x)
