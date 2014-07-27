@@ -1,1 +1,31 @@
-k,ljfdldsifjdspokf;sdlvc;
+#Prediction Assignment
+Here, we apply the machine learning algorithm we built above, to each of the 20 test cases in the testing data set provided.
+answers <- predict(model, cleanTestingdata)
+answers <- as.character(answers)
+answers
+
+##  [1] "B" "A" "B" "A" "A" "E" "D" "B" "A" "A" "B" "C" "B" "A" "E" "E" "A" "B" "B" "B"
+
+
+Finally, we write the answers to files as specified by the course instructor using the following code segment.
+pml_write_files = function(x) {
+    n = length(x)
+    for (i in 1:n) {
+        filename = paste0("problem_id_", i, ".txt")
+        write.table(x[i], file = filename, quote = FALSE, row.names = FALSE, 
+            col.names = FALSE)
+    }
+}
+
+pml_write_files(answers)
+On submission, we would see that all the predicted values are correct and a score of 20\20 is obtained. 
+
+
+#Conclusion
+We chose Random Forest as our machine learning algorithm for building our model because,
+Builds a highly accurate classifier.
+Can handle thousands of variables.
+Balances bias and variance trade-offs by settling for a balanced model.
+Using k-fold cross validation builds a robust model.
+We also obtained a really good accuracy based on the statistics we obtained above.
+
