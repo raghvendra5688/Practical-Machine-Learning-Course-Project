@@ -11,6 +11,7 @@ p <- 0.75
 k <- 10
 ```
 
+
 # Data processing
 
 Raw daset has been loaded into `data.frame` and filtered in odrder to remove summary rows. 
