@@ -1,6 +1,5 @@
 # Coursera Practical Machine Learning - The Course Project
 
-# Load the project data into workspace.
 
 ```r
 set.seed(174)
